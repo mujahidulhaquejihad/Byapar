@@ -41,13 +41,15 @@ export function migrate() {
     ["QUOTE", "QT"],
     ["LC", "LC"],
     ["EMPLOYEE", "EMP"],
-    ["PAYROLL", "PR"],
+    ["PAYROLL", "SAL"],
   ];
   for (const [name, prefix] of seqs) {
     if (!get("SELECT name FROM sequences WHERE name = ?", [name])) {
       run("INSERT INTO sequences (name, prefix, next_val) VALUES (?, ?, 1)", [name, prefix]);
     }
   }
+  // Payroll briefly shared "PR" with production orders
+  run("UPDATE sequences SET prefix = 'SAL' WHERE name = 'PAYROLL' AND prefix = 'PR'");
 
   // Invoices fully paid before partial payments existed
   run("UPDATE ar_invoices SET settled_cents = amount_cents WHERE status = 'paid' AND settled_cents = 0");
@@ -141,8 +143,8 @@ export function migrate() {
     ]) {
       run("UPDATE users SET email = ? WHERE email = ?", [newE, oldE]);
     }
-    run("UPDATE materials SET name = 'Jomadder assembly unit A' WHERE code = 'FG-UNIT-A' AND name LIKE 'Lokman%'");
-    run("UPDATE materials SET name = 'Jomadder utility bracket set' WHERE code = 'FG-BRACKET' AND name LIKE 'Lokman%'");
+    run("UPDATE materials SET name = 'Jomadder assembly unit A' WHERE sku = 'FG-UNIT-A' AND name LIKE 'Lokman%'");
+    run("UPDATE materials SET name = 'Jomadder utility bracket set' WHERE sku = 'FG-BRACKET' AND name LIKE 'Lokman%'");
   } catch {
     /* ignore */
   }
