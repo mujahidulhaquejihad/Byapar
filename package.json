@@ -1,0 +1,19 @@
+{
+  "name": "byapar",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Byapar — Bangladesh trade ERP (Security, FICO, MM, SD, PP)",
+  "workspaces": [
+    "apps/api",
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev -w api\" \"npm run dev -w web\"",
+    "start": "npm run build -w web && npm run start -w api",
+    "build": "npm run build -w web",
+    "test": "node --test apps/api/test/posting.test.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

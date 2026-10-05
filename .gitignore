@@ -1,0 +1,12 @@
+node_modules/
+dist/
+build/
+data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+.env
+.DS_Store
+Thumbs.db
+erp_plan/node_modules/
+apps/api/data/
